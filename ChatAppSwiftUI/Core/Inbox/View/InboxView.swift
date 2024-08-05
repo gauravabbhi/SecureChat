@@ -1,35 +1,32 @@
-//
-//  InboxView.swift
-//  ChatAppSwiftUI
-//
-//  Created by Gaurav Abbhi on 7/5/2024.
-//
-
 import SwiftUI
 
 struct InboxView: View {
     @State private var showNewMessageView = false
     @StateObject private var viewModel = InboxViewModel()
+    @StateObject private var nfcManager = NFCManager()
     @State private var selectedUser: User?
     @State private var showChat = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
     private var user: User? {
         return viewModel.currentUser
     }
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottomTrailing) {
                 List {
-                        ForEach(viewModel.latestMessages) { message in
-                            ZStack {
-                                NavigationLink(value: message) {
-                                   EmptyView()
-                                }
-                                .opacity(0)
-                                InboxRowView(message: message)
+                    ForEach(viewModel.latestMessages) { message in
+                        ZStack {
+                            NavigationLink(value: message) {
+                                EmptyView()
                             }
-                        
+                            .opacity(0)
+                            InboxRowView(message: message)
                         }
                     }
+                }
                 .listStyle(PlainListStyle())
                 .onChange(of: selectedUser, perform: { newValue in
                     showChat = newValue != nil
@@ -49,21 +46,20 @@ struct InboxView: View {
                         ChatView(user: user)
                             .navigationBarBackButtonHidden()
                     }
-                    
                 })
-                .navigationDestination(isPresented: $showChat , destination: {
+                .navigationDestination(isPresented: $showChat, destination: {
                     if let user = selectedUser {
                         ChatView(user: user)
                             .navigationBarBackButtonHidden()
                     }
                 })
-                .fullScreenCover(isPresented: $showNewMessageView){
+                .fullScreenCover(isPresented: $showNewMessageView) {
                     NewMessageView(selectedUser: $selectedUser)
                 }
                 .navigationTitle("")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar(.visible, for: .tabBar)
-                .toolbar{
+                .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Text("SecureChat")
                             .font(.title3)
@@ -72,21 +68,29 @@ struct InboxView: View {
                             .navigationBarColor(Color(.darkGray))
                     }
                     ToolbarItem(placement: .topBarTrailing) {
-                            HStack(spacing: 24) {
-                              Image(systemName: "simcard")
-                                
-                                if let user {
-                                    NavigationLink(value: Route.profile(user)) {
-                                    Image(systemName: "ellipsis")
-                                    }
+                        HStack(spacing: 24) {
+                            // Modified Button action to include completion handler
+                            Button(action: {
+                                nfcManager.onScanComplete = { scannedData in
+                                    validateNFCData(scannedData: scannedData)
                                 }
-
+                                nfcManager.scan()
+                            }) {
+                                Image(systemName: "simcard")
                             }
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            
+                            if let user {
+                                NavigationLink(value: Route.profile(user)) {
+                                    Image(systemName: "ellipsis")
+                                }
+                            }
                         }
-            }
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                    }
+                }
+                
                 Button {
                     showNewMessageView.toggle()
                     selectedUser = nil
@@ -102,7 +106,57 @@ struct InboxView: View {
                 }
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("NFC Validation"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
     }
+    
+    private func validateNFCData(scannedData: String?) {
+        // Debugging: Print the scanned data
+        if let scannedData = scannedData {
+            print("Scanned Data: \(scannedData)")
+        } else {
+            print("Scanned Data: nil")
+        }
+
+        // Debugging: Print the selected user for debugging
+        if let selectedUser = selectedUser {
+            print("Selected User ID: \(selectedUser.id)")
+        } else {
+            print("Selected User: nil")
+        }
+
+        // Extract the name from the scanned data
+        var extractedName: String? = nil
+        if let scannedData = scannedData {
+            let lines = scannedData.split(separator: "\n")
+            for line in lines {
+                if line.hasPrefix("Name:") {
+                    let nameComponents = line.split(separator: ":")
+                    if nameComponents.count > 1 {
+                        extractedName = nameComponents[1].trimmingCharacters(in: .whitespaces)
+                    }
+                    break
+                }
+            }
+        }
+
+        // Debugging: Print the extracted name
+        if let extractedName = extractedName {
+            print("Extracted Name: \(extractedName)")
+        } else {
+            print("Extracted Name: nil")
+        }
+
+        // Compare the extracted name with the selected user's ID
+        if let extractedName = extractedName, let selectedUser = user, extractedName == selectedUser.id {
+            alertMessage = "User ID matches!"
+        } else {
+            alertMessage = "User ID does not match."
+        }
+        showAlert = true
+    }
+
 }
 
 #Preview {
