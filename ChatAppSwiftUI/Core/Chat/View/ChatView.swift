@@ -16,9 +16,11 @@ struct ChatView: View {
     @State var tabBarVisibility: Visibility = .hidden
     @State private var showPhotoPicker: Bool = false
     @State private var showVideoPicker: Bool = false
+    var nfcData: String?
     
-    init(user: User) {
+    init(user: User, nfcData: String? = nil) {
         self.user = user
+        self.nfcData = nfcData
         self._viewModel = StateObject(wrappedValue: ChatViewModel(user: user))
     }
     
@@ -34,6 +36,10 @@ struct ChatView: View {
                 ScrollView {
                     ScrollViewReader { proxy in
                     // messages
+                        if let nfcData = nfcData { // Use nfcData
+                                       Text("NFC Data: \(nfcData)")
+                                           .padding()
+                                   }
                         VStack {
                             ForEach(viewModel.messageGroups) { group in
                                 Section(header:

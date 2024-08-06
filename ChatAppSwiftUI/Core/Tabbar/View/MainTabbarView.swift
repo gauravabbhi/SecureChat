@@ -11,6 +11,9 @@ struct MainTabbarView: View {
     @State private var selectedTab: Int = 0
     @StateObject private var viewModel = InboxViewModel()
     @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var appState: AppState
+    
+    
     private var user: User? {
         return viewModel.currentUser
     }
@@ -28,6 +31,7 @@ struct MainTabbarView: View {
                 .onAppear{
                     selectedTab = 0
                 }
+                .environmentObject(appState)
             
             Text("NFC")
                 .tabItem {

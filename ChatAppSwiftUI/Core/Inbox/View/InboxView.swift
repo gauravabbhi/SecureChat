@@ -3,11 +3,22 @@ import SwiftUI
 struct InboxView: View {
     @State private var showNewMessageView = false
     @StateObject private var viewModel = InboxViewModel()
-    @StateObject private var nfcManager = NFCManager()
+    @StateObject private var nfcManager: NFCManager
+    
     @State private var selectedUser: User?
     @State private var showChat = false
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var isNFCValidated = false
+    @State private var nfcData: String?
+    
+    @EnvironmentObject var appState: AppState
+    
+    init() {
+         let appState = AppState()
+         _nfcManager = StateObject(wrappedValue: NFCManager(appState: appState))
+     }
+
     
     private var user: User? {
         return viewModel.currentUser
@@ -19,11 +30,21 @@ struct InboxView: View {
                 List {
                     ForEach(viewModel.latestMessages) { message in
                         ZStack {
-                            NavigationLink(value: message) {
-                                EmptyView()
+                            if isNFCValidated {
+                                NavigationLink(value: message) {
+                                    EmptyView()
+                                }
+                                .opacity(0)
+                            } else {
+                                Button(action: {
+                                    showAlert = true
+                                    alertMessage = "Please validate your NFC card first."
+                                }) {
+                                    EmptyView()
+                                }
+                                .opacity(0)
                             }
-                            .opacity(0)
-                            InboxRowView(message: message)
+                            InboxRowView(message: message, showLockIcon: !isNFCValidated)
                         }
                     }
                 }
@@ -33,7 +54,7 @@ struct InboxView: View {
                 })
                 .navigationDestination(for: Message.self, destination: { message in
                     if let user = message.user {
-                        ChatView(user: user)
+                        ChatView(user: user, nfcData: nfcData)
                             .navigationBarBackButtonHidden()
                     }
                 })
@@ -43,13 +64,13 @@ struct InboxView: View {
                         ProfileView(user: user)
                             .navigationBarBackButtonHidden()
                     case .ChatView(let user):
-                        ChatView(user: user)
+                        ChatView(user: user, nfcData: nfcData)
                             .navigationBarBackButtonHidden()
                     }
                 })
                 .navigationDestination(isPresented: $showChat, destination: {
                     if let user = selectedUser {
-                        ChatView(user: user)
+                        ChatView(user: user, nfcData: nfcData)
                             .navigationBarBackButtonHidden()
                     }
                 })
@@ -69,7 +90,6 @@ struct InboxView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         HStack(spacing: 24) {
-                            // Modified Button action to include completion handler
                             Button(action: {
                                 nfcManager.onScanComplete = { scannedData in
                                     validateNFCData(scannedData: scannedData)
@@ -112,21 +132,6 @@ struct InboxView: View {
     }
     
     private func validateNFCData(scannedData: String?) {
-        // Debugging: Print the scanned data
-        if let scannedData = scannedData {
-            print("Scanned Data: \(scannedData)")
-        } else {
-            print("Scanned Data: nil")
-        }
-
-        // Debugging: Print the selected user for debugging
-        if let selectedUser = selectedUser {
-            print("Selected User ID: \(selectedUser.id)")
-        } else {
-            print("Selected User: nil")
-        }
-
-        // Extract the name from the scanned data
         var extractedName: String? = nil
         if let scannedData = scannedData {
             let lines = scannedData.split(separator: "\n")
@@ -140,23 +145,30 @@ struct InboxView: View {
                 }
             }
         }
+        
+        if let scannedData = scannedData {
+                print("Scanned Data: \(scannedData)")
+            } else {
+                print("Scanned Data: nil")
+            }
 
-        // Debugging: Print the extracted name
-        if let extractedName = extractedName {
-            print("Extracted Name: \(extractedName)")
-        } else {
-            print("Extracted Name: nil")
-        }
+            // Print the selected user for debugging
+            if let selectedUser = selectedUser {
+                print("Selected User: \(selectedUser)")
+            } else {
+                print("Selected User: nil")
+            }
 
-        // Compare the extracted name with the selected user's ID
         if let extractedName = extractedName, let selectedUser = user, extractedName == selectedUser.id {
             alertMessage = "User ID matches!"
+            isNFCValidated = true // Update the validation status
+            nfcData = scannedData
         } else {
             alertMessage = "User ID does not match."
+            isNFCValidated = false // Update the validation status
         }
         showAlert = true
     }
-
 }
 
 #Preview {

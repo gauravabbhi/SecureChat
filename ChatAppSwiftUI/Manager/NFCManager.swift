@@ -4,9 +4,16 @@ import CoreNFC
 class NFCManager: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate {
     @Published var session: NFCNDEFReaderSession?
     @Published var message = ""
+    @Published var payload: String?
     var dataToWrite: String?
     var onScanComplete: ((String?) -> Void)?
-
+    
+    var appState: AppState // Reference to global state
+    
+    init(appState: AppState) {
+        self.appState = appState
+    }
+    
     func scan() {
         guard NFCNDEFReaderSession.readingAvailable else {
             message = "NFC scanning not supported on this device"
@@ -16,7 +23,7 @@ class NFCManager: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate {
         session?.alertMessage = "Hold your iPhone near an NFC tag to scan"
         session?.begin()
     }
-
+    
     func write(data: String) {
         guard NFCNDEFReaderSession.readingAvailable else {
             message = "NFC writing not supported on this device"
@@ -27,13 +34,13 @@ class NFCManager: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate {
         session?.alertMessage = "Hold your iPhone near an NFC tag to write data"
         session?.begin()
     }
-
+    
     func readerSessionDidBecomeActive(_ session: NFCNDEFReaderSession) {
         DispatchQueue.main.async {
             self.message = "Session began"
         }
     }
-
+    
     func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
         guard let ndefMessage = messages.first, let record = ndefMessage.records.first,
               let payload = String(data: record.payload, encoding: .utf8) else {
@@ -46,9 +53,11 @@ class NFCManager: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate {
         DispatchQueue.main.async {
             self.message = "Read data: \(payload)"
             self.onScanComplete?(payload)  // Notify scan completion with the read data
+            self.payload = payload
+            self.appState.nfcData = payload
         }
     }
-
+    
     func readerSession(_ session: NFCNDEFReaderSession, didDetect tags: [NFCNDEFTag]) {
         if let dataToWrite = dataToWrite {
             guard let tag = tags.first else {
@@ -119,7 +128,7 @@ class NFCManager: NSObject, ObservableObject, NFCNDEFReaderSessionDelegate {
             }
         }
     }
-
+    
     func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
         DispatchQueue.main.async {
             self.session = nil

@@ -18,6 +18,7 @@ struct User: Codable,Identifiable,Hashable {
     let email: String
     let phoneNumber: String
     var profileImageUrl: String?
+    let publicKey: String?
     var firstName: String {
         let formatter = PersonNameComponentsFormatter()
         let components = formatter.personNameComponents(from: fullName)
@@ -27,6 +28,6 @@ struct User: Codable,Identifiable,Hashable {
 
 extension User {
     
-    static let MOCK_USER = User(fullName: "Elizabeth Olsen", email: "elizabeth.olsen@gmail.com",phoneNumber: "+1111111", profileImageUrl: "elizabeth")
+    static let MOCK_USER = User(fullName: "Elizabeth Olsen", email: "elizabeth.olsen@gmail.com",phoneNumber: "+1111111", profileImageUrl: "elizabeth", publicKey: "wfwYyx8N11/9DzE6D1L3zFqi+4D27oIbDPOkzC+v41s=")
     
 }

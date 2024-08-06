@@ -18,11 +18,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ChatAppSwiftUIApp: App {
+    @StateObject private var appState = AppState()
+    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     var body: some Scene {
         WindowGroup {
            RootView()
+                .environmentObject(appState)
         }
     }
 }

@@ -18,36 +18,22 @@
             endingLineNumber = "23"
             landmarkName = "fetchUsers()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "648EC9F1-3E20-4F35-96BD-9506AD6935B2 - d9319c3d2d09d62"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for ChatAppSwiftUI.NewMessageViewModel.fetchUsers() async throws -&gt; ()"
-                  moduleName = "ChatAppSwiftUI"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/karan/Xcode%20Projects/Projects/Capstone/SecureChat/ChatAppSwiftUI/Core/NewMessage/ViewModels/NewMessageViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "23"
-                  endingLineNumber = "23">
-               </Location>
-               <Location
-                  uuid = "648EC9F1-3E20-4F35-96BD-9506AD6935B2 - 95e488a9c6c5867f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (ChatAppSwiftUI.User) -&gt; Swift.Bool in ChatAppSwiftUI.NewMessageViewModel.fetchUsers() async throws -&gt; ()"
-                  moduleName = "ChatAppSwiftUI"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/karan/Xcode%20Projects/Projects/Capstone/SecureChat/ChatAppSwiftUI/Core/NewMessage/ViewModels/NewMessageViewModel.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "23"
-                  endingLineNumber = "23">
-               </Location>
-            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E53ADE40-981C-4E6C-864C-B9F20787CA6D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ChatAppSwiftUI/Manager/NFCManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "readerSession(_:didDetectNDEFs:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

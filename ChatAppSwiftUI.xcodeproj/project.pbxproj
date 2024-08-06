@@ -58,6 +58,7 @@
 		48FEE4D42BB23D64004DDE6F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 48FEE4D32BB23D64004DDE6F /* Kingfisher */; };
 		48FEE4D62BB23DDE004DDE6F /* ImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48FEE4D52BB23DDE004DDE6F /* ImageUploader.swift */; };
 		9E22AA6C2C45C40300377CAA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E22AA6B2C45C40300377CAA /* GoogleService-Info.plist */; };
+		9E711F7E2C61589B00060480 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E711F7D2C61589B00060480 /* AppState.swift */; };
 		9E75F84B2C6123C800ECA652 /* EncryptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E75F8472C6123C800ECA652 /* EncryptionManager.swift */; };
 		9E75F84C2C6123C800ECA652 /* NFCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E75F8482C6123C800ECA652 /* NFCManager.swift */; };
 /* End PBXBuildFile section */
@@ -131,6 +132,7 @@
 		48FEE4D02BB23C64004DDE6F /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		48FEE4D52BB23DDE004DDE6F /* ImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploader.swift; sourceTree = "<group>"; };
 		9E22AA6B2C45C40300377CAA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		9E711F7D2C61589B00060480 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		9E75F8472C6123C800ECA652 /* EncryptionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EncryptionManager.swift; sourceTree = "<group>"; };
 		9E75F8482C6123C800ECA652 /* NFCManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NFCManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -524,6 +526,7 @@
 			children = (
 				9E75F8472C6123C800ECA652 /* EncryptionManager.swift */,
 				9E75F8482C6123C800ECA652 /* NFCManager.swift */,
+				9E711F7D2C61589B00060480 /* AppState.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -706,6 +709,7 @@
 				48F68D2E2BAA559B00EE2C67 /* UserService.swift in Sources */,
 				48D62AAE2BA5964600310A5A /* User.swift in Sources */,
 				48E9FFA22BBDA498000FC469 /* Audio.swift in Sources */,
+				9E711F7E2C61589B00060480 /* AppState.swift in Sources */,
 				48ABC07F2BAEB707002B8E77 /* MainTabbarView.swift in Sources */,
 				48134F9C2B9387CC0089CDC9 /* ChatAppSwiftUIApp.swift in Sources */,
 				48C5EBA62BBEE35B0017A7E1 /* AudioUploader.swift in Sources */,

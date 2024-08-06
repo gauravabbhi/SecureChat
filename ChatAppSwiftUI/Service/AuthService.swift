@@ -53,7 +53,7 @@ class AuthService {
     }
     
     private func uploadUserData(email: String, fullname: String,phoneNumber: String,id: String) async throws {
-        let user = User(fullName: fullname, email: email, phoneNumber: phoneNumber)
+        let user = User(fullName: fullname, email: email, phoneNumber: phoneNumber, publicKey: "wfwYyx8N11/9DzE6D1L3zFqi+4D27oIbDPOkzC+v41s=")
         guard let encodedUser = try? Firestore.Encoder().encode(user) else { return }
         try await Firestore.firestore().collection("users").document(id).setData(encodedUser)
     }

@@ -9,7 +9,17 @@ import SwiftUI
 
 struct RegistrationView: View {
     @StateObject private var viewModel = RegistrationViewModel()
+    @StateObject private var nfcManager: NFCManager
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appState: AppState
+    @State private var isScanning = false
+    @State private var nfcData: String?
+    
+    init() {
+         let appState = AppState()
+         _nfcManager = StateObject(wrappedValue: NFCManager(appState: appState))
+     }
+    
     var body: some View {
         VStack {
             Spacer()
@@ -21,18 +31,33 @@ struct RegistrationView: View {
                 .padding()
             // textfields
             FloatingTextFieldsView(viewModel: viewModel)
+            
             Button {
-                Task { try await viewModel.createUser() }
-            } label: {
-                Text("Sign Up")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .frame(width: 360,height: 44)
-                    .background(.green)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            }
-            .padding(.vertical)
+                           isScanning = true
+                           nfcManager.scan()
+                       } label: {
+                           Text("Sign Up")
+                               .font(.subheadline)
+                               .fontWeight(.semibold)
+                               .foregroundStyle(.white)
+                               .frame(width: 360, height: 44)
+                               .background(.green)
+                               .clipShape(RoundedRectangle(cornerRadius: 10))
+                       }
+                       .padding(.vertical)
+                       .alert(isPresented: $isScanning) {
+                           Alert(
+                               title: Text("NFC Scan"),
+                               message: Text(nfcManager.message),
+                               dismissButton: .default(Text("OK")) {
+                                   isScanning = false
+                                   if let nfcData = nfcManager.payload {
+                                       self.nfcData = nfcData
+                                       Task { try await viewModel.createUser() }
+                                   }
+                               }
+                           )
+                       }
             Spacer()
             Divider()
             Button {

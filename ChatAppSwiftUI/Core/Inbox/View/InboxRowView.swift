@@ -1,17 +1,12 @@
-//
-//  InboxRowView.swift
-//  ChatAppSwiftUI
-//
-//  Created by Gaurav Abbhi on 11/5/2024.
-//
-
 import SwiftUI
 import Kingfisher
 
 struct InboxRowView: View {
     let message: Message
+    let showLockIcon: Bool
+    
     var body: some View {
-        HStack(alignment: .top,spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             ZStack {
                 CircularProfileImageView(user: message.user, size: .medium)
                 KFImage(URL(string: message.user?.profileImageUrl ?? ""))
@@ -51,9 +46,14 @@ struct InboxRowView: View {
                         .frame(maxWidth: UIScreen.main.bounds.width - 100, alignment: .leading)
                 }
             }
+            Spacer()
             HStack {
                 Text(message.timestampString)
-                Image(systemName: "chevron.right")
+                if showLockIcon {
+                    Image(systemName: "lock.fill") // Lock icon
+                } else {
+                    Image(systemName: "chevron.right")
+                }
             }
             .font(.footnote)
             .foregroundStyle(.gray)
@@ -61,6 +61,3 @@ struct InboxRowView: View {
         .frame(height: 72)
     }
 }
-
-
-
